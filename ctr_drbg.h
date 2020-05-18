@@ -53,7 +53,6 @@ void generate_Random(st_state *state, u8 *random, u8 *add_data, u8 *re_Entrophy,
 void Reseed_Function(st_state* state,u8 *re_Entrophy,u8 *re_add_data,st_len* LEN);
 void CTR_DRBG(st_state* in_state, st_len* len,u8* in, u8* seed,u8* random,u8* re_add_data,u8 *re_Entrophy,u8 *add_data);
 
-
 //! ARIA
 void DL(const u8 *i, u8 *o);
 void RotXOR(const u8 *s, int n, u8 *t);

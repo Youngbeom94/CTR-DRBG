@@ -19,7 +19,6 @@ void copy_state(u8 drc[LEN_SEED][BLOCK_SIZE], u8 *src, int len)
     for (int cnt_i = 0; cnt_i < BLOCK_SIZE; cnt_i++)
     {
         drc[len][cnt_i] = src[cnt_i];
-        // printf("%02x ",drc[len][cnt_i]);
     }
 }
 void copy(u8 *drc, u8 *src)
@@ -63,17 +62,11 @@ void derived_function(u8 *input_data, u8 *seed, u8 *input_len)
             set_state(state, in, 16 * cnt_i);
             XoR(state, chain_value, BLOCK_SIZE);
             Crypt(state, EncKeySetup(CBC_KEY, round_key, 128), round_key, chain_value);
-            // printf("\n");
-            // for (int cnt_k = 0; cnt_k < 16; cnt_k++)
-            // {
-            //     printf("%02x ", chain_value[cnt_k]);
-            // }
         }
         copy_state(KEYandV, chain_value, cnt_j);
         clear(chain_value, BLOCK_SIZE);
         in[3]++;
     }
-
     //! step2
     u8 key[16] = {0x00};
     for (cnt_i = 0; cnt_i < BLOCK_SIZE; cnt_i++)
@@ -81,17 +74,6 @@ void derived_function(u8 *input_data, u8 *seed, u8 *input_len)
         key[cnt_i] = KEYandV[0][cnt_i];
         state[cnt_i] = KEYandV[1][cnt_i];
     }
-    // printf("\n");
-    // for (int cnt_k = 0; cnt_k < 16; cnt_k++)
-    // {
-    //     printf("%02x ", key[cnt_k]);
-    // }
-    // printf("\n");
-    // for (int cnt_k = 0; cnt_k < 16; cnt_k++)
-    // {
-    //     printf("%02x ", state[cnt_k]);
-    // }
-
     for (cnt_i = 0; cnt_i < LEN_SEED; cnt_i++)
     {
         Crypt(state, EncKeySetup(key, round_key, 128), round_key, chain_value);
@@ -108,12 +90,8 @@ void update(st_state *state, u8 *seed)
 {
     int cnt_i, cnt_j, cnt_k = 0;
     u8 round_key[16 * 17] = {0x00};
-    u8 result[16] = {
-        0x00,
-    };
-    u8 temp[32] = {
-        0x00,
-    };
+    u8 result[16] = {0x00};
+    u8 temp[32] = {0x00};
 
     for (cnt_i = 0; cnt_i < LEN_SEED; cnt_i++)
     {
@@ -155,7 +133,6 @@ void generate_Random(st_state *state, u8 *random, u8 *add_data, u8 *re_Entrophy,
                 random[cnt_i * 16 + cnt_j] = result[cnt_j];
             }
         }
-
         for (cnt_i = 0; cnt_i < LEN_SEED; cnt_i++)
         {
             state->V[15]++;
@@ -241,7 +218,6 @@ void generate_Random(st_state *state, u8 *random, u8 *add_data, u8 *re_Entrophy,
             state->V[cnt_i] = temp[16 + cnt_i] ^ seed[16 + cnt_i];
         }
     }
-
     state->Reseed_counter++;
 }
 
@@ -259,7 +235,6 @@ void Reseed_Function(st_state* state,u8 *re_Entrophy,u8 *re_add_data,st_len* len
     {
         input_data[cnt_i] = re_Entrophy[cnt_i - len->re_Entrophy];
     }
-
     derived_function(input_data, seed, &len2);
     update(state,seed);
     free(input_data);
