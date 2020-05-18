@@ -26,30 +26,32 @@ typedef unsigned char u8;
 
 
 typedef struct _IN_state {   
-    unsigned char key[16];   
-    unsigned char V[16];     
-    unsigned char Reseed_counter;
-    unsigned char prediction_flag;
-} in_state;
+    u8 key[16];   
+    u8 V[16];     
+    u8 Reseed_counter;
+    u8 prediction_flag;
+} st_state;
 
 typedef struct LEN {   
-    unsigned char add_data;   
-    unsigned char re_adddata;     
-    unsigned char re_Entrophy;
-    unsigned char seed; 
-    unsigned char general_len;
+    u8 add_data;   
+    u8 re_adddata;     
+    u8 re_Entrophy;
+    u8 seed; 
+    u8 general_len;
+    u8 input_len;
 } st_len;
 
-void XoR(unsigned char* drc, unsigned char* src, int len);
-void set_state(unsigned char* drc, unsigned char* src , int start);
-void copy_state(unsigned char drc[LEN_SEED][BLOCK_SIZE], unsigned char * src, int len);
-void copy(unsigned char *drc, unsigned char * src);
-void clear(unsigned char *src, int len);
+void XoR(u8* drc, u8* src, int len);
+void set_state(u8* drc, u8* src , int start);
+void copy_state(u8 drc[LEN_SEED][BLOCK_SIZE], u8 * src, int len);
+void copy(u8 *drc, u8 * src);
+void clear(u8 *src, int len);
 
-void df(unsigned char *input_data,unsigned char* seed, unsigned char *input_len);
-void update(in_state* state,unsigned char* seed);
-void gf(in_state *state, unsigned char *random, unsigned char *add_data, unsigned char *re_Entrophy, unsigned char *re_add_data,st_len* LEN);
-void Reseed_Function(in_state* state,unsigned char *re_Entrophy,unsigned char *re_add_data,st_len* LEN);
+void derived_function(u8 *input_data,u8* seed, u8 *input_len);
+void update(st_state* state,u8* seed);
+void generate_Random(st_state *state, u8 *random, u8 *add_data, u8 *re_Entrophy, u8 *re_add_data,st_len* LEN);
+void Reseed_Function(st_state* state,u8 *re_Entrophy,u8 *re_add_data,st_len* LEN);
+void CTR_DRBG(st_state* in_state, st_len* len,u8* in, u8* seed,u8* random,u8* re_add_data,u8 *re_Entrophy,u8 *add_data);
 
 
 //! ARIA
