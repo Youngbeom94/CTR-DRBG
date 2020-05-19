@@ -67,6 +67,8 @@ void derived_function(u8 *input_data, u8 *seed, u8 *input_len)
         clear(chain_value, BLOCK_SIZE);
         in[3]++;
     }
+
+    
     //! step2
     u8 key[16] = {0x00};
     for (cnt_i = 0; cnt_i < BLOCK_SIZE; cnt_i++)
@@ -76,7 +78,7 @@ void derived_function(u8 *input_data, u8 *seed, u8 *input_len)
     }
     for (cnt_i = 0; cnt_i < LEN_SEED; cnt_i++)
     {
-        Crypt(state, EncKeySetup(key, round_key, 128), round_key, chain_value);
+        Crypt(state,EncKeySetup(key, round_key, 128), round_key, chain_value);
         for (cnt_j = 0; cnt_j < BLOCK_SIZE; cnt_j++)
         {
             seed[cnt_i * 16 + cnt_j] = chain_value[cnt_j];
