@@ -55,7 +55,7 @@ void derived_function(u8 *input_data, u8 *seed, u8 *input_len)
     in[cnt_i] = 0x80;
 
     u8 state[16] = {0x00};
-    for (cnt_j = 0; cnt_j < 2; cnt_j++)
+    for (cnt_j = 0; cnt_j < LEN_SEED; cnt_j++)
     {
         for (cnt_i = 0; cnt_i < len / 16; cnt_i++)
         {
