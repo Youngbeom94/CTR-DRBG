@@ -19,7 +19,7 @@
 #define BLOCK_BIT 128
 #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
 #define BLOCK_SIZE 16
-#define SEED_LEN (KEY_BIT + BLOCK_BIT)/BLOCK_SIZE
+#define SEED_LEN (KEY_BIT + BLOCK_BIT)/8
 #define N_DF (KEY_BIT + BLOCK_BIT)/8
 #define TRUE  1
 #define FALSE  0
@@ -82,14 +82,17 @@ void CTR_DRBG(st_state* in_state, st_len* len,u8* in, u8* seed,u8* random,u8* re
 #if KEY_BIT == 128
 void aes128_init(const void *key, aes128_ctx_t *ctx);
 void aes128_enc_CBC_asm(void *buffer, aes128_ctx_t *ctx);
+void aes128_enc_CTR_asm(void *buffer, aes128_ctx_t *ctx);
 
 #elif KEY_BIT == 192
 void aes192_init(const void *key, aes192_ctx_t *ctx);
 void aes192_enc_CBC_asm(void *buffer, aes128_ctx_t *ctx);
+void aes192_enc_CTR_asm(void *buffer, aes128_ctx_t *ctx);
 
 #else //KEY_BIT ==256
 void aes256_init(const void *key, aes128_ctx_t *ctx);
 void aes256_enc_CBC_asm(void *buffer, aes128_ctx_t *ctx);
+void aes256_enc_CTR_asm(void *buffer, aes128_ctx_t *ctx);
 #endif
 
 
