@@ -15,7 +15,6 @@
 #include <stdlib.h>
 
 
-typedef unsigned char u8;
 #define KEY_BIT 128
 #define BLOCK_BIT 128
 #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
@@ -24,7 +23,31 @@ typedef unsigned char u8;
 #define TRUE  1
 #define FALSE  0
 
+typedef struct{
+	uint8_t ks[16];
+} aes_roundkey_t;
 
+#if KEY_BIT == 128
+typedef struct{
+	aes_roundkey_t key[10+1];
+} aes128_ctx_t;
+
+#elif KEY_BIT ==192
+typedef struct{
+	aes_roundkey_t key[12+1];
+} aes192_ctx_t;
+
+#else
+typedef struct{
+	aes_roundkey_t key[14+1];
+} aes256_ctx_t;
+#endif
+typedef struct{
+	aes_roundkey_t key[1]; /* just to avoid the warning */
+} aes_genctx_t;
+
+
+typedef unsigned char u8;
 typedef struct _IN_state {   
     u8 key[16];   
     u8 V[16];     
@@ -53,11 +76,24 @@ void generate_Random(st_state *state, u8 *random, u8 *add_data, u8 *re_Entrophy,
 void Reseed_Function(st_state* state,u8 *re_Entrophy,u8 *re_add_data,st_len* LEN);
 void CTR_DRBG(st_state* in_state, st_len* len,u8* in, u8* seed,u8* random,u8* re_add_data,u8 *re_Entrophy,u8 *add_data);
 
-//! ARIA
-void DL(const u8 *i, u8 *o);
-void RotXOR(const u8 *s, int n, u8 *t);
-int EncKeySetup(const u8 *w0, u8 *e, int keyBits);
-void Crypt(const u8 *p, int R, const u8 *e, u8 *c);
+//! AES
+
+#if KEY_BIT == 128
+void aes128_init(const void *key, aes128_ctx_t *ctx);
+void aes128_enc_CBC_asm(void *buffer, aes128_ctx_t *ctx);
+
+#elif KEY_BIT == 192
+void aes192_init(const void *key, aes192_ctx_t *ctx);
+void aes192_enc_CBC_asm(void *buffer, aes128_ctx_t *ctx);
+
+#else //KEY_BIT ==256
+void aes256_init(const void *key, aes128_ctx_t *ctx);
+void aes256_enc_CBC_asm(void *buffer, aes128_ctx_t *ctx);
+#endif
+
+
+
+
 
 
 
