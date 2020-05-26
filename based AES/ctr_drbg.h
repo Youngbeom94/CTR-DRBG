@@ -19,6 +19,7 @@
 #define BLOCK_BIT 128
 #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
 #define BLOCK_SIZE 16
+#define SEED_LEN (KEY_BIT + BLOCK_BIT)/BLOCK_SIZE
 #define N_DF (KEY_BIT + BLOCK_BIT)/8
 #define TRUE  1
 #define FALSE  0
@@ -49,8 +50,8 @@ typedef struct{
 
 typedef unsigned char u8;
 typedef struct _IN_state {   
-    u8 key[16];   
-    u8 V[16];     
+    u8 key[SEED_LEN - BLOCK_SIZE];   
+    u8 V[BLOCK_SIZE];     
     u8 Reseed_counter;
     u8 prediction_flag;
 } st_state;

@@ -43,8 +43,18 @@ void derived_function(u8 *input_data, u8 *seed, u8 *input_len)
     u8 CBC_KEY[16] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
     u8 chain_value[16] = {0x00};
     u8 KEYandV[LEN_SEED][16] = {0x00};
+#if KEY_BIT == 128
     aes128_ctx_t aes_test;
     aes128_init(CBC_KEY, &aes_test);
+#elif KEY_BIT == 192
+    aes192_ctx_t aes_test;
+    aes192_init(CBC_KEY, &aes_test);
+
+#else //KEY_BIT ==256
+    aes256_ctx_t aes_test;
+    aes256_init(CBC_KEY, &aes_test);
+#endif
+
     if (temp != 0)
         len += BLOCK_SIZE - temp;
 
@@ -62,7 +72,13 @@ void derived_function(u8 *input_data, u8 *seed, u8 *input_len)
         {
             set_state(state, in, 16 * cnt_i);
             XoR(state, chain_value, BLOCK_SIZE);
+#if KEY_BIT == 128
             aes128_enc_CBC_asm(state, &aes_test);
+#elif KEY_BIT == 192
+            aes192_enc_CBC_asm(state, &aes_test);
+#else //KEY_BIT ==256
+            aes256_enc_CBC_asm(state, &aes_test);
+#endif
             copy(chain_value, state);
         }
         copy_state(KEYandV, chain_value, cnt_j);
@@ -77,10 +93,22 @@ void derived_function(u8 *input_data, u8 *seed, u8 *input_len)
         key[cnt_i] = KEYandV[0][cnt_i];
         state[cnt_i] = KEYandV[1][cnt_i];
     }
+#if KEY_BIT == 128
     aes128_init(key, &aes_test);
+#elif KEY_BIT == 192
+    aes192_init(key, &aes_test);
+#else //KEY_BIT ==256
+    aes256_init(key, &aes_test);
+#endif
     for (cnt_i = 0; cnt_i < LEN_SEED; cnt_i++)
     {
+#if KEY_BIT == 128
         aes128_enc_CBC_asm(state, &aes_test);
+#elif KEY_BIT == 192
+        aes192_enc_CBC_asm(state, &aes_test);
+#else //KEY_BIT ==256
+        aes256_enc_CBC_asm(state, &aes_test);
+#endif
         for (cnt_j = 0; cnt_j < BLOCK_SIZE; cnt_j++)
         {
             seed[cnt_i * 16 + cnt_j] = state[cnt_j];
@@ -94,7 +122,7 @@ void update(st_state *state, u8 *seed)
     int cnt_i, cnt_j, cnt_k = 0;
     u8 round_key[16 * 17] = {0x00};
     u8 result[16] = {0x00};
-    u8 temp[32] = {0x00};
+    u8 temp[SEED_LEN] = {0x00};
 
     for (cnt_i = 0; cnt_i < LEN_SEED; cnt_i++)
     {
@@ -105,10 +133,13 @@ void update(st_state *state, u8 *seed)
             temp[cnt_i * 16 + cnt_j] = result[cnt_j];
         }
     }
-    for (cnt_i = 0; cnt_i < 16; cnt_i++)
+    for (cnt_i = 0; cnt_i < SEED_LEN - BLOCK_SIZE ; cnt_i++)
     {
         state->key[cnt_i] = temp[cnt_i] ^ seed[cnt_i];
-        state->V[cnt_i] = temp[16 + cnt_i] ^ seed[16 + cnt_i];
+    }
+    for (cnt_i = 0 ; cnt_i < BLOCK_SIZE ; cnt_i++)
+    {
+        state->V[cnt_i] = temp[SEED_LEN - BLOCK_SIZE + cnt_i] ^ seed[SEED_LEN - BLOCK_SIZE + cnt_i];
     }
 }
 
