@@ -15,64 +15,36 @@
 /*
 *   choose your block Cipher, using flag
 *
-*   HIGHT = 0,
-*   LEA_128 = 1,
-*   LEA_192 = 2,
-*   LEA_256 = 3,
-*   CHAM_64_128 = 4,
-*   CHAM_128_128 = 5,
-*   CHAM_128_256 = 6
+*   HIGHT_CHAM_64_128    <------ HIGHT   or  CHAM 64/128
+*   LEA_128_CHAM_128_128 <------ LEA 128 or  CHAM 128/128
+*   LEA_192              <------ LEA 192
+*   LEA_256_CHAM_128_256 <------ LEA 256 or  CHAM 128/256,
 */
-#define BLOCK_CIPHER  0
 
+#define LEA_128_CHAM_128_128
 
-#if BLOCK_CIPHER == 0 //HIGHT
+#if defined(HIGHT_CHAM_64_128)
+    #define KEY_BIT 128
+    #define BLOCK_BIT 64
+    #define N_CONSTANT 0x18
+#elif defined(LEA_128_CHAM_128_128)
     #define KEY_BIT 128
     #define BLOCK_BIT 128
-    #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
-    #define BLOCK_SIZE 16
-    #define N_DF (KEY_BIT + BLOCK_BIT)>>3
-
-#elif BLOCK_CIPHER == 1 // LEA_128
-    #define KEY_BIT 128
+    #define N_CONSTANT 0x20
+#elif defined(LEA_192)
+    #define KEY_BIT 192
     #define BLOCK_BIT 128
-    #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
-    #define BLOCK_SIZE 16
-    #define N_DF (KEY_BIT + BLOCK_BIT)>>3
-#elif BLOCK_CIPHER == 2 // LEA_192
-
+    #define N_CONSTANT 0x30
+#elif defined(LEA_256_CHAM_128_256)
+    #define KEY_BIT 256
     #define BLOCK_BIT 128
-    #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
-    #define BLOCK_SIZE 16
-    #define N_DF (KEY_BIT + BLOCK_BIT)>>3
-
-#elif BLOCK_CIPHER == 3 // LEA_256
-   #define BLOCK_BIT 128
-    #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
-    #define BLOCK_SIZE 16
-    #define N_DF (KEY_BIT + BLOCK_BIT)>>3
-
-#elif BLOCK_CIPHER == 4 // CHAM_64_128
-   #define BLOCK_BIT 128
-    #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
-    #define BLOCK_SIZE 16
-    #define N_DF (KEY_BIT + BLOCK_BIT)>>3
-
-#elif BLOCK_CIPHER == 5 // CHAM_128_128
-   #define BLOCK_BIT 128
-    #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
-    #define BLOCK_SIZE 16
-    #define N_DF (KEY_BIT + BLOCK_BIT)>>3
-
-#else //CHAM_128_256
-
-   #define BLOCK_BIT 128
-    #define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
-    #define BLOCK_SIZE 16
-    #define N_DF (KEY_BIT + BLOCK_BIT)>>3
+    #define N_CONSTANT 0x40
 #endif
 
-
+#define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
+#define N_DF (KEY_BIT + BLOCK_BIT)>>3
+#define SEED_BIT KEY_BIT + BLOCK_BIT 
+#define BLOCK_SIZE 16
 #define TRUE  1
 #define FALSE  0
 
