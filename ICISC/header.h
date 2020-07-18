@@ -41,18 +41,32 @@
     #define N_CONSTANT 0x40
 #endif
 
-#define LEN_SEED (KEY_BIT + BLOCK_BIT)/BLOCK_BIT
-#define N_DF (KEY_BIT + BLOCK_BIT)>>3
-#define SEED_BIT KEY_BIT + BLOCK_BIT 
-#define BLOCK_SIZE 16
+#define LEN_SEED ((KEY_BIT + BLOCK_BIT) / BLOCK_BIT)
+#define N_DF ((KEY_BIT + BLOCK_BIT)>>3)
+#define SEED_BIT (KEY_BIT + BLOCK_BIT) 
+#define SEED_LEN (SEED_BIT / 8)
+#define BLOCK_SIZE (BLOCK_BIT/8)
+#define KEY_SIZE (KEY_BIT / 8)
 #define TRUE  1
 #define FALSE  0
+
+
+/*
+*       INPUT Condition
+*       Select length 
+*/
+#define ENTROPHY_LEN 10
+#define NONCE 10
+#define Personal_String 10
+#define INSTANCE_INPUT (ENTROPHY_LEN + NONCE + Personal_String)
+#define DF_PADDING_LEN ((INSTANCE_INPUT + 25) % BLOCK_SIZE)
+#define DF_INPUT_LEN   ((INSTANCE_INPUT + 25) + DF_PADDING_LEN)
 
 typedef unsigned char u8;
 
 typedef struct _IN_state {   
-    u8 key[16];   
-    u8 V[16];     
+    u8 key[KEY_SIZE];   
+    u8 V[BLOCK_SIZE];     
     u8 Reseed_counter;
     u8 prediction_flag;
 } st_state;
@@ -68,11 +82,11 @@ typedef struct LEN {
 
 void XoR(u8* drc, u8* src, int len);
 void set_state(u8* drc, u8* src , int start);
-void copy_state(u8 drc[LEN_SEED][BLOCK_SIZE], u8 * src, int len);
+void copy_state(u8* drc, u8 * src, int len);
 void copy(u8 *drc, u8 * src);
 void clear(u8 *src, int len);
 
-void derived_function(u8 *input_data,u8* seed, u8 *input_len);
+void derived_function(u8 *input_data,u8* seed);
 void update(st_state* state,u8* seed);
 void generate_Random(st_state *state, u8 *random, u8 *add_data, u8 *re_Entrophy, u8 *re_add_data,st_len* LEN);
 void Reseed_Function(st_state* state,u8 *re_Entrophy,u8 *re_add_data,st_len* LEN);
@@ -83,7 +97,5 @@ void DL(const u8 *i, u8 *o);
 void RotXOR(const u8 *s, int n, u8 *t);
 int EncKeySetup(const u8 *w0, u8 *e, int keyBits);
 void Crypt(const u8 *p, int R, const u8 *e, u8 *c);
-
-
 
 #endif
