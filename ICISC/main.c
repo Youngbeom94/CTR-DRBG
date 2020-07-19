@@ -11,10 +11,15 @@ int main()
     u8 re_add_data[RESEED_ADD_DATA_LEN] = {0x00};
     u8 random[RANDOM_LEN] = {0x00};
 
+    u8 LUK_Table[BLOCK_SIZE + SEED_LEN] = {0x00};
+
     CTR_DRBG(in_state, in, seed, random, re_add_data);
+    Optimize_CTR_DRBG(in_state, in, seed, random, re_add_data, LUK_Table);
+
+
 
     Show_Random_number(random);
 
-    
+
     return 0;
 }

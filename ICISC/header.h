@@ -95,8 +95,12 @@ void update_first_call_first_call(st_state* state,u8* seed);
 void update(st_state *state, u8 *seed,u8* add_data);
 void generate_Random(st_state *state, u8 *random, u8 *re_add_data);
 void Reseed_Function(st_state *state,u8* Reseed_AddData);
-void CTR_DRBG(st_state *in_state, u8 *in, u8 *seed, u8 *random, u8 *re_add_data);
 void Output(st_state *state, u8* random);
+
+void CTR_DRBG(st_state *in_state, u8 *in, u8 *seed, u8 *random, u8 *re_add_data);
+
+void Optimize_CTR_DRBG(st_state *in_state, u8 *in, u8 *seed, u8 *random, u8 *re_add_data, u8* LUK_Table);
+void derived_function_Optimize(u8 *input_data, u8 *seed, u8* LUK_Table);
 
 
 
