@@ -62,6 +62,15 @@
 #define DF_PADDING_LEN ((INSTANCE_INPUT + 25) % BLOCK_SIZE)
 #define DF_INPUT_LEN   ((INSTANCE_INPUT + 25) + DF_PADDING_LEN)
 
+#define ADD_DATA_LEN 10 //it must be small then SEEN_LEN
+#define RESEED_ADD_DATA_LEN 10 
+#define RESEED_PADDING_LEN ((RESEED_ADD_DATA_LEN + 25) % BLOCK_SIZE)
+#define RESEED_INPUT_LEN   ((RESEED_ADD_DATA_LEN + 25) + DF_PADDING_LEN)
+
+
+#define RANDOM_LEN 128 //(BYTE)
+
+
 typedef unsigned char u8;
 
 typedef struct _IN_state {   
@@ -71,26 +80,25 @@ typedef struct _IN_state {
     u8 prediction_flag;
 } st_state;
 
-typedef struct LEN {   
-    u8 add_data;   
-    u8 re_adddata;     
-    u8 re_Entrophy;
-    u8 seed; 
-    u8 general_len;
-    u8 input_len;
-} st_len;
 
 void XoR(u8* drc, u8* src, int len);
 void set_state(u8* drc, u8* src , int start);
 void copy_state(u8* drc, u8 * src, int len);
 void copy(u8 *drc, u8 * src);
 void clear(u8 *src, int len);
+void copy_state_seed(u8 *drc, st_state *src);
+void Show_State(st_state *state);
+void Show_Random_number(u8* random);
 
 void derived_function(u8 *input_data,u8* seed);
-void update(st_state* state,u8* seed);
-void generate_Random(st_state *state, u8 *random, u8 *add_data, u8 *re_Entrophy, u8 *re_add_data,st_len* LEN);
-void Reseed_Function(st_state* state,u8 *re_Entrophy,u8 *re_add_data,st_len* LEN);
-void CTR_DRBG(st_state* in_state, st_len* len,u8* in, u8* seed,u8* random,u8* re_add_data,u8 *re_Entrophy,u8 *add_data);
+void update_first_call_first_call(st_state* state,u8* seed);
+void update(st_state *state, u8 *seed,u8* add_data);
+void generate_Random(st_state *state, u8 *random, u8 *re_add_data);
+void Reseed_Function(st_state *state,u8* Reseed_AddData);
+void CTR_DRBG(st_state *in_state, u8 *in, u8 *seed, u8 *random, u8 *re_add_data);
+void Output(st_state *state, u8* random);
+
+
 
 //! ARIA
 void DL(const u8 *i, u8 *o);
