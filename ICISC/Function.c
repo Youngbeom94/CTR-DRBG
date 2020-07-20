@@ -18,9 +18,7 @@ void derived_function(u8 *input_data, u8 *seed)
     in[24 + INSTANCE_INPUT] = 0x80;
 
     u8 state[BLOCK_SIZE] = {0x00};
-    /*
-    * AVR function Setting
-    */
+
     u8 round_key[16 * 17] = {0x00};
 
     //! step1
